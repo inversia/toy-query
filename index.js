@@ -1,3 +1,6 @@
+// Реализация некоторых методов
+
+
 function $(query) {
   
    let nodes // NodeList
@@ -48,3 +51,49 @@ function $(query) {
       }
    }
 }
+
+
+// Реализация функции querySelector
+
+
+
+function isElementMatches (node, token) {
+    
+    if (token[0] === '#') { // токен является id
+
+        return (node.id === token.slice(1))
+
+    } else /* токен является тегом */ {
+        return (node.tagName === token.toUpperCase ())
+    }
+}
+
+
+
+function _querySelector (root, [token, ...restTokens]) {
+
+    if (!token) return root
+
+    for (const node of root.childNodes) {
+
+        if (isElementMatches(node, token)) {
+
+            const result = _querySelector (node, restTokens)
+            
+            if (result) return result
+        }
+    }
+
+    // nothing found
+    return undefined
+}
+
+function querySelector (root, selector) {
+
+    return _querySelector (root, selector.split (' > '))
+}
+
+document.addEventListener ('DOMContentLoaded', () => {
+
+    // console.log ('querySelector returned:', querySelector (document.body, 'div > #ololo > li > strong'))
+})
