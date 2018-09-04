@@ -48,7 +48,22 @@ function $(query) {
         
         for (const el of nodes) addEventListener ('click', f)
         return this
-      }
+      },
+
+      attr (name, value){
+        if (value === undefined){
+          
+          return nodes[0].getAttribute(name)
+        } else {
+          
+          for (const el of nodes) el.setAttribute (name, value)
+          return this
+        }
+     },
+     
+     removeAttr (name) {
+        for (const el of nodes) el.removeAttribute (name)
+     }
    }
 }
 
