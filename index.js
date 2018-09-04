@@ -17,6 +17,10 @@ function $(query) {
    }
 
    return {
+
+      length: nodes.length,
+     
+      ...nodes,
      
       addClass (cls) {
          for (const el of nodes) el.classList.add (cls)
