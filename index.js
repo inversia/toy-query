@@ -1,23 +1,34 @@
 // Реализация некоторых методов
 
 
-function $(query) {
+// "jQuery"
+
+function getNodes (from) { // должно возвращать список Nodes
   
-   let nodes // NodeList
-   
-   if (query[0] !== '<') { // либо находим элементы в DOM
+   if (Node.prototype.isPrototypeOf (from)) { // если нам передали Node
      
-     nodes = [...document.querySelectorAll (query)]
+     return [from]
      
-   } else { // либо создаем их из HTML-строки (query)
+   } else if (from[0] === '<') { // либо создаем их из переданной HTML-строки
      
      const root = document.createElement ('DIV')
      root.innerHTML = query  // стирает все, что в root и добавляет содержимое, пробразовывая в DOM-дерево
-     nodes = [...root.childNodes]
+     return root.childNodes
+          
+   } else { // либо находим их в DOM
+     
+     return document.querySelectorAll (from)
    }
+}
 
+function $(from) {
+  
+   const nodes = [...getNodes (from)]
+  
+/* "JQuery collection"   */
+  
    return {
-
+     
       length: nodes.length,
      
       ...nodes,
@@ -31,9 +42,20 @@ function $(query) {
          if (txt !== undefined) {
             for (const el of nodes) el.innerText = txt
             return this
-         } else {
+         } else {            
             let result = ''
             for (const el of nodes) result += el.innerText
+            return result
+         }
+      },
+        
+      html (smth) {
+         if (smth !== undefined) {
+            for (const el of nodes) el.innerHTML = smth
+            return this
+         } else {
+            let result = ''
+            for (const el of nodes) result += el.innerHTML
             return result
          }
       },
@@ -53,8 +75,8 @@ function $(query) {
         for (const el of nodes) addEventListener ('click', f)
         return this
       },
-
-      attr (name, value){
+     
+     attr (name, value){
         if (value === undefined){
           
           return nodes[0].getAttribute(name)
@@ -67,6 +89,10 @@ function $(query) {
      
      removeAttr (name) {
         for (const el of nodes) el.removeAttribute (name)
+     },
+       
+     each (callback) {
+        for (let i = 0; i < nodes.length; i++) callback(i, nodes[i])
      }
    }
 }
